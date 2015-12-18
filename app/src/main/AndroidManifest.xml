@@ -18,7 +18,8 @@
         </activity>
         <activity android:name=".activities.MainActivity"/>
         <activity android:name=".activities.MembersActivity"/>
-        <activity android:name=".activities.addtaskActivity" >
+        <activity android:name=".activities.addtaskActivity" />
+        <activity android:name=".activities.AddTeamActivity" >
         </activity>
         <receiver
             android:name=".NotificationBroadCastReceiver"

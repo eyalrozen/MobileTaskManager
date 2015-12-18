@@ -26,7 +26,8 @@ public class MembersDBHelper extends SQLiteOpenHelper {
                 + " INTEGER PRIMARY KEY," + MembersDBContract.MembersEntry.COLUMN_MEMBER_USERNAME +" TEXT NOT NULL,"
                 + MembersDBContract.MembersEntry.COLUMN_MEMBER_PASSWORD +" TEXT NOT NULL,"+
                 MembersDBContract.MembersEntry.COLUMN_MEMBER_PHONE+" TEXT NOT NULL,"+
-                MembersDBContract.MembersEntry.COLUMN_MEMBER_MAILSENT+" TEXT NOT NULL  UNIQUE ON CONFLICT REPLACE)";
+                MembersDBContract.MembersEntry.COLUMN_MEMBER_MAILSENT+" TEXT NOT NULL,"
+                + MembersDBContract.MembersEntry.COLUMN_MEMBER_TEAM+" TEXT NOT NULL  UNIQUE ON CONFLICT REPLACE)";
         db.execSQL(SQL_CREATE_LOCATION_TABLE);
     }
 

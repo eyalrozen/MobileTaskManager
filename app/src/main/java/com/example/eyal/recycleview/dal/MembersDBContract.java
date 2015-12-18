@@ -9,7 +9,7 @@ public class MembersDBContract {
     public static final class MembersEntry implements BaseColumns {
 
         // Table name
-        public static final String TABLE_NAME = "null";
+        public static final String TABLE_NAME = "Members";
 
         public static final String COLUMN_MEMBER_USERNAME = "Member_username";
 
@@ -18,6 +18,8 @@ public class MembersDBContract {
         public static final String COLUMN_MEMBER_PHONE = "Member_phone";
 
         public static final String COLUMN_MEMBER_MAILSENT = "Member_mailsent";
+
+        public static final String COLUMN_MEMBER_TEAM = "Member_team";
 
     }
 }

@@ -15,6 +15,7 @@ import com.example.eyal.recycleview.common.*;
 //Start the app on LoginActivity
 public class LoginActivity extends Activity {
 
+	public static String teamName;
 	private EditText userNameEditText;
 	private EditText passwordEditText;
 	private EditText phoneNumberEditText;
@@ -48,14 +49,16 @@ public class LoginActivity extends Activity {
 			String phoneNumber = phoneNumberEditText.getText().toString();
 			if(controller.isListEmpty())
 			{
-				try {
+				Intent teamNameIntent = new Intent(getApplicationContext(),AddTeamActivity.class);
+				startActivityForResult(teamNameIntent,1);
+				/*try {
 					User u = controller.AddUser(userName, pass, phoneNumber,1);
 					controller.setLogedIn(u);
 					startMembersActivity();
 					return;
 				}
 				catch(Exception e)
-				{}
+				{}*/
 			}
 			else {
 				User u = controller.GetUser(userName, pass, phoneNumber);
@@ -71,7 +74,33 @@ public class LoginActivity extends Activity {
     	}
 		
 	}
-    
+
+	@Override
+	//Recieve the input text from AddTeamActivity and insert it as teamName
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch(requestCode) {
+			case (1) : {
+				if (resultCode == Activity.RESULT_OK) {
+
+					String tName = data.getStringExtra("teamName");
+					teamName = tName;
+					String userName  = userNameEditText.getText().toString();
+					String pass = passwordEditText.getText().toString();
+					String phoneNumber = phoneNumberEditText.getText().toString();
+					try {
+						User u = controller.AddUser(userName, pass, phoneNumber,1);
+						controller.setLogedIn(u);
+						startMembersActivity();
+						return;
+					}
+					catch(Exception e)
+					{}
+				}
+				break;
+			}
+		}
+	}
     public void startMembersActivity()
     {
 		//Explicit intent.

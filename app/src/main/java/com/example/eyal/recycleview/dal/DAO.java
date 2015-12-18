@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
+import com.example.eyal.recycleview.activities.LoginActivity;
 import com.example.eyal.recycleview.common.*;
 
 import java.sql.Time;
@@ -23,7 +24,8 @@ public class DAO implements IDataAcces
     private MembersDBHelper MembersdbHelper;
     private TaskDBHelper TaskdbHelper;
     private String[] membersColumns = {MembersDBContract.MembersEntry._ID,MembersDBContract.MembersEntry.COLUMN_MEMBER_USERNAME
-    ,MembersDBContract.MembersEntry.COLUMN_MEMBER_PASSWORD,MembersDBContract.MembersEntry.COLUMN_MEMBER_PHONE,MembersDBContract.MembersEntry.COLUMN_MEMBER_MAILSENT};
+    ,MembersDBContract.MembersEntry.COLUMN_MEMBER_PASSWORD,MembersDBContract.MembersEntry.COLUMN_MEMBER_PHONE,MembersDBContract.MembersEntry.COLUMN_MEMBER_MAILSENT
+    ,MembersDBContract.MembersEntry.COLUMN_MEMBER_TEAM};
     private String[] tasksColumns = { TaskDBContract.TaskEntry._ID,
             TaskDBContract.TaskEntry.COLUMN_TASK_DESCRIPTION,};
 
@@ -180,6 +182,7 @@ public class DAO implements IDataAcces
             values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_PASSWORD, usr.getPassword());
             values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_PHONE, usr.getPhoneNumber());
             values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_MAILSENT, ( usr.getMailSend()));
+            values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_TEAM, (LoginActivity.teamName));
             Toast.makeText(context, usr.getUserName(), Toast.LENGTH_SHORT);
 
             //do the insert.
