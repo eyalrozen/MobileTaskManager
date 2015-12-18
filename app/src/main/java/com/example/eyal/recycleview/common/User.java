@@ -3,8 +3,8 @@ package com.example.eyal.recycleview.common;
 public class User {
 	private String userName;
 	private String password;
-	private String mail;
 	private String phoneNumber;
+	private int isMailSent;
 
 	public String getUserName() {
 		return userName;
@@ -22,14 +22,10 @@ public class User {
 		this.password = password;
 	}
 
-	/*public String getMail() {
-		return mail;
-	}
+	public void setMailSent(int isMailSent){this.isMailSent=isMailSent;}
 
-	public void setMail(String mail) {
-		this.mail = mail;
-	}
-*/
+	public int getMailSend() {return isMailSent;}
+
 	public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
 
 	public String getPhoneNumber() {return phoneNumber;}

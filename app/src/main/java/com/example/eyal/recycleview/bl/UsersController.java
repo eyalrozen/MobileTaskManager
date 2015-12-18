@@ -35,12 +35,13 @@ public class UsersController
 		return dao.GetUserList();
 	}
 
-	public User AddUser(String userName,String password,String phoneNumber)
+	public User AddUser(String userName,String password,String phoneNumber,int isMailSent)
 	{
 		User usr = new User();
 		usr.setUserName(userName);
 		usr.setPassword(password);
 		usr.setPhoneNumber(phoneNumber);
+		usr.setMailSent(isMailSent);
 		return dao.AddUser(usr);
 	}
 

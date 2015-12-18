@@ -49,7 +49,7 @@ public class LoginActivity extends Activity {
 			if(controller.isListEmpty())
 			{
 				try {
-					User u = controller.AddUser(userName, pass, phoneNumber);
+					User u = controller.AddUser(userName, pass, phoneNumber,1);
 					controller.setLogedIn(u);
 					startMembersActivity();
 					return;

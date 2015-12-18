@@ -23,7 +23,7 @@ public class DAO implements IDataAcces
     private MembersDBHelper MembersdbHelper;
     private TaskDBHelper TaskdbHelper;
     private String[] membersColumns = {MembersDBContract.MembersEntry._ID,MembersDBContract.MembersEntry.COLUMN_MEMBER_USERNAME
-    ,MembersDBContract.MembersEntry.COLUMN_MEMBER_PASSWORD,MembersDBContract.MembersEntry.COLUMN_MEMBER_PHONE,};
+    ,MembersDBContract.MembersEntry.COLUMN_MEMBER_PASSWORD,MembersDBContract.MembersEntry.COLUMN_MEMBER_PHONE,MembersDBContract.MembersEntry.COLUMN_MEMBER_MAILSENT};
     private String[] tasksColumns = { TaskDBContract.TaskEntry._ID,
             TaskDBContract.TaskEntry.COLUMN_TASK_DESCRIPTION,};
 
@@ -147,6 +147,7 @@ public class DAO implements IDataAcces
         f.setUserName(cursor.getString(cursor.getColumnIndex(MembersDBContract.MembersEntry.COLUMN_MEMBER_USERNAME)));
         f.setPassword(cursor.getString(cursor.getColumnIndex(MembersDBContract.MembersEntry.COLUMN_MEMBER_PASSWORD)));
         f.setPhoneNumber(cursor.getString((cursor.getColumnIndex(MembersDBContract.MembersEntry.COLUMN_MEMBER_PHONE))));
+        f.setMailSent(cursor.getInt((cursor.getColumnIndex(MembersDBContract.MembersEntry.COLUMN_MEMBER_MAILSENT))));
 
         return f;
     }
@@ -178,6 +179,7 @@ public class DAO implements IDataAcces
             values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_USERNAME, usr.getUserName());
             values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_PASSWORD, usr.getPassword());
             values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_PHONE, usr.getPhoneNumber());
+            values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_MAILSENT, ( usr.getMailSend()));
             Toast.makeText(context, usr.getUserName(), Toast.LENGTH_SHORT);
 
             //do the insert.

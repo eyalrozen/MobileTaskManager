@@ -24,8 +24,9 @@ public class MembersDBHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_LOCATION_TABLE = "CREATE TABLE "
                 + MembersDBContract.MembersEntry.TABLE_NAME + " (" + MembersDBContract.MembersEntry._ID
                 + " INTEGER PRIMARY KEY," + MembersDBContract.MembersEntry.COLUMN_MEMBER_USERNAME +" TEXT NOT NULL,"
-                + MembersDBContract.MembersEntry.COLUMN_MEMBER_PASSWORD +" TEXT NOT NULL,"+ MembersDBContract.MembersEntry.COLUMN_MEMBER_PHONE
-        +" TEXT NOT NULL  UNIQUE ON CONFLICT REPLACE)";
+                + MembersDBContract.MembersEntry.COLUMN_MEMBER_PASSWORD +" TEXT NOT NULL,"+
+                MembersDBContract.MembersEntry.COLUMN_MEMBER_PHONE+" TEXT NOT NULL,"+
+                MembersDBContract.MembersEntry.COLUMN_MEMBER_MAILSENT+" TEXT NOT NULL  UNIQUE ON CONFLICT REPLACE)";
         db.execSQL(SQL_CREATE_LOCATION_TABLE);
     }
 
