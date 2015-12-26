@@ -2,8 +2,11 @@ package com.example.eyal.recycleview.activities;
 
 
 import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,6 +14,17 @@ import android.widget.Toast;
 import com.example.eyal.recycleview.R;
 import com.example.eyal.recycleview.bl.*;
 import com.example.eyal.recycleview.common.*;
+import com.parse.CountCallback;
+import com.parse.FindCallback;
+import com.parse.LogInCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import java.io.Console;
+import java.util.List;
 
 //Start the app on LoginActivity
 public class LoginActivity extends Activity {
@@ -20,37 +34,72 @@ public class LoginActivity extends Activity {
 	private EditText passwordEditText;
 	private EditText phoneNumberEditText;
 	private UsersController controller;
-	
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+		Parse.initialize(this);
+		ParseUser currentUser = ParseUser.getCurrentUser();
+		if(currentUser != null){
+			startMembersActivity();
+			return;
+		}
         controller = new UsersController(this);
         //ask the controller if the user is logged in.
-        if(controller.isLoggedIn())
+       /* if(controller.isLoggedIn())
         {
         	//In case the user is logged in start the main activity.
 			startMembersActivity();
         	return;
-        }
+        }*/
         //get the useName and password edit text view 
         userNameEditText = (EditText) findViewById(R.id.editTextUserName);
         passwordEditText = (EditText) findViewById(R.id.editTextPassword);
 		phoneNumberEditText = (EditText) findViewById(R.id.editTextphoneNumber);
     }
     
-    public void logInClicked(View v)
-    {
+    public void logInClicked(View v) throws ParseException {
     	//get the password, user name and phone number from the edit text.
     	if(userNameEditText!=null && passwordEditText!=null && phoneNumberEditText!=null)
     	{
     		String userName  = userNameEditText.getText().toString();
     		String pass = passwordEditText.getText().toString();
 			String phoneNumber = phoneNumberEditText.getText().toString();
-			if(controller.isListEmpty())
+
+			ParseUser.logInInBackground(userName, pass, new LogInCallback() {
+				public void done(ParseUser user, ParseException e) {
+					if (user != null) {
+						// Hooray! The user is logged in.
+						Toast.makeText(getApplicationContext(),"User can log in!",Toast.LENGTH_LONG);
+					}
+					else {
+						ParseQuery<ParseUser> query = ParseUser.getQuery();
+						query.whereEqualTo("isAdmin",1);
+						query.findInBackground(new FindCallback<ParseUser>() {
+							@Override
+							public void done(List<ParseUser> userList, ParseException e) {
+								if (e == null) {
+									if (userList.size()>0) {
+										Log.d("Mylog", "Error in username/password!");
+									}
+									else { // Should be the admin login 1st time
+										Intent teamNameIntent = new Intent(getApplicationContext(), AddTeamActivity.class);
+										startActivityForResult(teamNameIntent, 1);
+									}
+								}
+								else { // Should be the admin login 1st time
+									Toast.makeText(getApplicationContext(),"Unable to get data from server!",Toast.LENGTH_LONG);
+
+								}
+							}
+						});
+					}
+				}
+			});
+			/*if(controller.isListEmpty())
 			{
-				Intent teamNameIntent = new Intent(getApplicationContext(),AddTeamActivity.class);
-				startActivityForResult(teamNameIntent,1);
+
 				/*try {
 					User u = controller.AddUser(userName, pass, phoneNumber,1);
 					controller.setLogedIn(u);
@@ -58,19 +107,19 @@ public class LoginActivity extends Activity {
 					return;
 				}
 				catch(Exception e)
-				{}*/
+				{}
 			}
 			else {
 				User u = controller.GetUser(userName, pass, phoneNumber);
 				//the user is exists, set the IsLogin flag to true.
-				if (u != null) {
+				if (u !=null) {
 					controller.setLogedIn(u);
 					startMembersActivity();
 					return;
 				}
 				//log in was failed.
 				Toast.makeText(this, "User name or password or phone number is incorrect", Toast.LENGTH_LONG).show();
-			}
+			}*/
     	}
 		
 	}
@@ -82,15 +131,14 @@ public class LoginActivity extends Activity {
 		switch(requestCode) {
 			case (1) : {
 				if (resultCode == Activity.RESULT_OK) {
-
 					String tName = data.getStringExtra("teamName");
 					teamName = tName;
 					String userName  = userNameEditText.getText().toString();
 					String pass = passwordEditText.getText().toString();
 					String phoneNumber = phoneNumberEditText.getText().toString();
 					try {
-						User u = controller.AddUser(userName, pass, phoneNumber,1);
-						controller.setLogedIn(u);
+						User u = controller.AddUser(userName, pass, phoneNumber,1,1,teamName);
+						//controller.setLogedIn(u);
 						startMembersActivity();
 						return;
 					}
@@ -105,6 +153,8 @@ public class LoginActivity extends Activity {
     {
 		//Explicit intent.
 		Intent  i = new Intent(this,MembersActivity.class);
+		ParseUser currentUser = ParseUser.getCurrentUser();
+		i.putExtra("userName",currentUser.getUsername());
 		//Start the activity
 		startActivity(i);
 		finish();

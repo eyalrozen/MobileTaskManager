@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:text="Add Member"
         android:id="@+id/addBtn"
+        android:onClick="onAddBtnClick"
         android:layout_marginBottom="26dp"
         android:layout_alignBottom="@+id/body"
         android:layout_toLeftOf="@+id/donebutton"

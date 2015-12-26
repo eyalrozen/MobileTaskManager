@@ -3,9 +3,15 @@ package com.example.eyal.recycleview.bl;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.widget.Toast;
 
 import com.example.eyal.recycleview.common.*;
 import com.example.eyal.recycleview.dal.*;
+import com.parse.FindCallback;
+import com.parse.LogInCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +41,15 @@ public class UsersController
 		return dao.GetUserList();
 	}
 
-	public User AddUser(String userName,String password,String phoneNumber,int isMailSent)
+	public User AddUser(String userName,String password,String phoneNumber,int isMailSent, int isAdmin,String teamName)
 	{
 		User usr = new User();
 		usr.setUserName(userName);
 		usr.setPassword(password);
 		usr.setPhoneNumber(phoneNumber);
 		usr.setMailSent(isMailSent);
+		usr.setPermission(isAdmin);
+		usr.setTeamName(teamName);
 		return dao.AddUser(usr);
 	}
 
@@ -55,6 +63,47 @@ public class UsersController
 		}
 			return null;
 	}
+
+	/*public User GetUserFromServer(final String userName, final String password, final String phoneNumber)
+	{
+
+		ParseUser.logInInBackground(userName, password, new LogInCallback() {
+			@Override
+			public void done(ParseUser user, ParseException e) {
+				if(user !=null) try {
+					ParseQuery<ParseUser> query = ParseUser.getQuery();
+					query.whereEqualTo("username", userName);
+					query.findInBackground(new FindCallback<ParseUser>() {
+						@Override
+						public void done(List<ParseUser> objects, ParseException e) {
+							String team = "";
+							for (ParseUser t : objects) {
+								team = t.get("Team").toString();
+							}
+							User u = AddUser(userName, password, phoneNumber, 1, 1,team );
+							return u;
+						}
+					});
+
+					Toast.makeText(context, "Logged In!", Toast.LENGTH_LONG);
+
+
+				} catch (Exception ea) {
+				}
+
+				else
+					Toast.makeText(context,"Username / Password is not correct", Toast.LENGTH_LONG);
+
+			}
+		});
+		/*List<User> updatedList = dao.GetUserList();
+		for (User t:updatedList)
+		{
+			if(t.getUserName() == userName && t.getPassword()==password && t.getPhoneNumber()==phoneNumber)
+				return t;
+		}
+		return null;
+	}*/
 
 	public boolean isListEmpty()
 	{
@@ -102,5 +151,10 @@ public class UsersController
 		for (OnDataSourceChangeListener listener : dataSourceChangedListenrs) {
 			listener.DataSourceChanged();
 		}
+	}
+
+	public String GetTeamName()
+	{
+		return dao.GetTeamName();
 	}
 }

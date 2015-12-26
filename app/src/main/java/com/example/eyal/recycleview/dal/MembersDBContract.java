@@ -21,5 +21,7 @@ public class MembersDBContract {
 
         public static final String COLUMN_MEMBER_TEAM = "Member_team";
 
+        public static final String COLUMN_MEMBER_PERMISSION = "Member_permission";
+
     }
 }

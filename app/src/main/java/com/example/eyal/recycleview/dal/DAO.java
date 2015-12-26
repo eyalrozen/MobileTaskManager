@@ -8,6 +8,9 @@ import android.widget.Toast;
 
 import com.example.eyal.recycleview.activities.LoginActivity;
 import com.example.eyal.recycleview.common.*;
+import com.parse.ParseException;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 import java.sql.Time;
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ import java.util.List;
  */
 public class DAO implements IDataAcces
 {
+
     private List<TaskItem> TaskList = new ArrayList<TaskItem>();
     private static DAO instance;
     private Context context;
@@ -25,7 +29,7 @@ public class DAO implements IDataAcces
     private TaskDBHelper TaskdbHelper;
     private String[] membersColumns = {MembersDBContract.MembersEntry._ID,MembersDBContract.MembersEntry.COLUMN_MEMBER_USERNAME
     ,MembersDBContract.MembersEntry.COLUMN_MEMBER_PASSWORD,MembersDBContract.MembersEntry.COLUMN_MEMBER_PHONE,MembersDBContract.MembersEntry.COLUMN_MEMBER_MAILSENT
-    ,MembersDBContract.MembersEntry.COLUMN_MEMBER_TEAM};
+    ,MembersDBContract.MembersEntry.COLUMN_MEMBER_TEAM,MembersDBContract.MembersEntry.COLUMN_MEMBER_PERMISSION};
     private String[] tasksColumns = { TaskDBContract.TaskEntry._ID,
             TaskDBContract.TaskEntry.COLUMN_TASK_DESCRIPTION,};
 
@@ -77,7 +81,6 @@ public class DAO implements IDataAcces
         try {
             database = TaskdbHelper.getReadableDatabase();
             List<TaskItem> tasks = new ArrayList<TaskItem>();
-
             Cursor cursor = database.query(TaskDBContract.TaskEntry.TABLE_NAME, tasksColumns,
                     null, null, null, null, null);
 
@@ -150,7 +153,8 @@ public class DAO implements IDataAcces
         f.setPassword(cursor.getString(cursor.getColumnIndex(MembersDBContract.MembersEntry.COLUMN_MEMBER_PASSWORD)));
         f.setPhoneNumber(cursor.getString((cursor.getColumnIndex(MembersDBContract.MembersEntry.COLUMN_MEMBER_PHONE))));
         f.setMailSent(cursor.getInt((cursor.getColumnIndex(MembersDBContract.MembersEntry.COLUMN_MEMBER_MAILSENT))));
-
+        f.setPermission(cursor.getInt((cursor.getColumnIndex(MembersDBContract.MembersEntry.COLUMN_MEMBER_PERMISSION))));
+        f.setTeamName(cursor.getString((cursor.getColumnIndex(MembersDBContract.MembersEntry.COLUMN_MEMBER_TEAM))));
         return f;
     }
 
@@ -182,7 +186,8 @@ public class DAO implements IDataAcces
             values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_PASSWORD, usr.getPassword());
             values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_PHONE, usr.getPhoneNumber());
             values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_MAILSENT, ( usr.getMailSend()));
-            values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_TEAM, (LoginActivity.teamName));
+            values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_TEAM, (MembersDBContract.MembersEntry.TABLE_NAME));
+            values.put(MembersDBContract.MembersEntry.COLUMN_MEMBER_PERMISSION, ( usr.getPermission()));
             Toast.makeText(context, usr.getUserName(), Toast.LENGTH_SHORT);
 
             //do the insert.
@@ -196,12 +201,35 @@ public class DAO implements IDataAcces
             //create the friend object from the cursor.
             User newUser = cursorTouser(cursor);
             cursor.close();
+            ParseUser user = new ParseUser();
+            user.setUsername(usr.getUserName());
+            user.setPassword(usr.getPassword());
+            user.put("Phone", usr.getPhoneNumber());
+            user.put("MailSend", usr.getMailSend());
+            user.put("Team" , usr.getTeamName());
+            user.put("isAdmin" ,usr.getPermission());
+            user.signUpInBackground(new SignUpCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if(e==null)
+                    {
+                        Toast.makeText(context,"User Added succesfully!",Toast.LENGTH_LONG);
+                    }
+                    else
+                        Toast.makeText(context,"Problem Adding user",Toast.LENGTH_LONG);
+                }
+            });
             return newUser;
         }finally {
             if (database != null)
                 database.close();
         }
 
+    }
+
+    public String GetTeamName()
+    {
+        return MembersDBContract.MembersEntry.TABLE_NAME;
     }
 
 

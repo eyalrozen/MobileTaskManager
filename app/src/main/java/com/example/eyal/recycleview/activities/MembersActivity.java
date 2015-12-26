@@ -1,6 +1,7 @@
 package com.example.eyal.recycleview.activities;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,8 @@ import com.example.eyal.recycleview.*;
 import com.example.eyal.recycleview.R;
 import com.example.eyal.recycleview.bl.*;
 import com.example.eyal.recycleview.common.*;
+
+import java.util.List;
 
 
 public class MembersActivity extends AppCompatActivity implements
@@ -42,6 +45,11 @@ public class MembersActivity extends AppCompatActivity implements
         // in content do not change the layout size of the RecyclerView
         controller.registerOnDataSourceChanged(this);
         mRecyclerView.setHasFixedSize(true);
+        Bundle extras = getIntent().getExtras();
+        if(extras !=null){
+            String username = extras.getString("userName");
+            Toast.makeText(getApplicationContext(),"Welcome "+username,Toast.LENGTH_LONG);
+        }
 
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
@@ -53,14 +61,23 @@ public class MembersActivity extends AppCompatActivity implements
         doneBtn = (Button) findViewById(R.id.donebutton);
         doneBtn.setOnClickListener(OnDoneBtnClickListener);
         addBtn =(Button) findViewById(R.id.addBtn);
-        addBtn.setOnClickListener(OnAddBtnClickListener);
+        addBtn.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Intent ContactListIntent = new Intent(v.getContext(),PhoneContactsActivity.class);
+                startActivityForResult(ContactListIntent,2);
+
+            }
+        });
     }
 
     private View.OnClickListener OnDoneBtnClickListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
             Intent email = new Intent(Intent.ACTION_SEND);
-            for (User usr:controller.GetUsersList()) {
+            List<User> allUsers = controller.GetUsersList();
+            for (User usr:allUsers) {
                 if(usr.getMailSend()==0) {
                     email.putExtra(Intent.EXTRA_BCC, new String[]{usr.getUserName()});
                     usr.setMailSent(1);
@@ -77,14 +94,6 @@ public class MembersActivity extends AppCompatActivity implements
         }
     };
 
-    private View.OnClickListener OnAddBtnClickListener = new View.OnClickListener(){
-        @Override
-        public void onClick(View v) {
-            Intent i = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-            startActivityForResult(i, 1001);
-
-        }
-    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -92,7 +101,6 @@ public class MembersActivity extends AppCompatActivity implements
 
         switch (requestCode) {
             case 1001:
-
                 if (resultCode == Activity.RESULT_OK) {
 
                     Cursor s = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
@@ -106,6 +114,8 @@ public class MembersActivity extends AppCompatActivity implements
                 }
 
                 break;
+            case 2:
+                uAdapter.notifyDataSetChanged();
 
         }
 

@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface IDataAcces {
     User AddUser(User usr);
-
+    String GetTeamName();
     List<TaskItem> GetTaskList();
     List<User> GetUserList();
     void RemoveTask(TaskItem task);
